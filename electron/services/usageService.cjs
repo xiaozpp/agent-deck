@@ -66,6 +66,16 @@ function runCli(spec, label, args) {
   });
 }
 
+function withTimeout(promise, ms, label) {
+  let timer;
+  return Promise.race([
+    promise,
+    new Promise((_, reject) => {
+      timer = setTimeout(() => reject(new Error(`${label} timed out after ${ms}ms`)), ms);
+    }),
+  ]).finally(() => clearTimeout(timer));
+}
+
 function isoDate(date) {
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, "0");
@@ -214,7 +224,12 @@ function initScanCache() {
   if (scanCache) return scanCache;
 
   const mapping = new Map();
-  const searchDirs = ["d:\\work"];
+  const searchDirs = [
+    process.env.TOOL_MASTER_WORK_ROOT,
+    path.join(os.homedir(), "projects"),
+    path.join(os.homedir(), "Documents"),
+    path.join(os.homedir(), "Desktop"),
+  ].filter(Boolean);
 
   function traverse(dir, depth = 0) {
     if (depth > 2) return;
@@ -367,13 +382,19 @@ function resolveWorkspace(key, label, cache) {
 }
 
 async function buildUsageReport(query = {}) {
-  await syncAntigravitySessions();
-  scanCache = null; // reset cache on each refresh
   const client = normalizeClient(query.client || "codex");
+  const force = query.force === true;
+  if (force || client === "antigravity") {
+    await syncAntigravitySessions();
+  }
+  scanCache = null; // reset cache on each refresh
   const provider = query.provider || "combined";
   const tokscaleBin = resolveBin("tokscale");
   const tokscaleClient = tokscaleClientValue(client);
   const common = ["--client", tokscaleClient, "--json", "--no-spinner", ...rangeArgs(query)];
+  const ccusageTask = provider !== "tokscale" && force
+    ? withTimeout(loadCcusage(client, query, true), 12_000, "ccusage")
+    : Promise.resolve(null);
 
   // Each source is fetched independently with allSettled: a failure in one
   // (e.g. tokscale's internal LiteLLM parse error, or a flaky ccusage scan)
@@ -382,7 +403,7 @@ async function buildUsageReport(query = {}) {
     runCli(tokscaleBin, "tokscale", ["--group-by", "workspace,model", ...common]),
     runCli(tokscaleBin, "tokscale", ["hourly", ...common]),
     runCli(tokscaleBin, "tokscale", ["clients", "--json"]),
-    provider === "tokscale" ? Promise.resolve(null) : loadCcusage(client, query, query.force === true),
+    ccusageTask,
   ]);
 
   const warnings = [];
