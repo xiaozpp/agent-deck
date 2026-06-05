@@ -26,6 +26,7 @@ const {
 } = require("./services/skillsService.cjs");
 const { readMarkdownFile } = require("./services/markdownService.cjs");
 const { shouldOpenDevTools } = require("./windowPolicy.cjs");
+const { appRoot, distIndexPath } = require("./appPaths.cjs");
 const {
   listClients: mcpListClients,
   listServers: mcpListServers,
@@ -45,7 +46,7 @@ const {
   withStatus,
 } = require("./toolRegistry.cjs");
 
-const rootDir = app.isPackaged ? process.resourcesPath : path.resolve(__dirname, "..");
+const rootDir = appRoot(app, __dirname);
 let mainWindow;
 
 function createWindow() {
@@ -57,10 +58,10 @@ function createWindow() {
     height,
     minWidth: 980,
     minHeight: 680,
-    frame: false,
+    frame: app.isPackaged,
     transparent: false,
     backgroundColor: "#f3f7fb",
-    title: "Agent 指挥台",
+    title: "Agent Deck",
     webPreferences: {
       preload: path.join(__dirname, "preload.cjs"),
       contextIsolation: true,
@@ -69,7 +70,7 @@ function createWindow() {
   });
 
   if (app.isPackaged || process.env.TOOL_MASTER_LOAD_DIST === "1") {
-    mainWindow.loadFile(path.join(rootDir, "dist", "index.html"));
+    mainWindow.loadFile(distIndexPath(rootDir));
   } else {
     mainWindow.loadURL("http://127.0.0.1:5173");
     if (shouldOpenDevTools()) {
