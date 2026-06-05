@@ -22,6 +22,8 @@ function resolveBin(name) {
   // Explicit override wins (TOKSCALE_BIN / CCUSAGE_BIN), treated as a full path.
   const override = process.env[`${name.toUpperCase()}_BIN`];
   if (override) return { command: override, prefix: [] };
+  const native = resolveNativeBin(name);
+  if (native) return { command: native, prefix: [] };
   try {
     const pkg = require(`${name}/package.json`);
     const rel = typeof pkg.bin === "string" ? pkg.bin : pkg.bin && pkg.bin[name];
@@ -37,6 +39,21 @@ function resolveBin(name) {
 
 function unpackAsarPath(filePath) {
   return String(filePath || "").replace("app.asar", "app.asar.unpacked");
+}
+
+function resolveNativeBin(name) {
+  if (process.platform !== "win32") return null;
+  const packages = {
+    tokscale: "@tokscale/cli-win32-x64-msvc/bin/tokscale.exe",
+    ccusage: "@ccusage/ccusage-win32-x64/bin/ccusage.exe",
+  };
+  const target = packages[name];
+  if (!target) return null;
+  try {
+    return unpackAsarPath(require.resolve(target));
+  } catch (_) {
+    return null;
+  }
 }
 
 function runCli(spec, label, args) {
@@ -484,6 +501,7 @@ module.exports = {
   normalizeClient,
   rangeArgs,
   resolveBin,
+  resolveNativeBin,
   tokscaleClientValue,
   unpackAsarPath,
 };

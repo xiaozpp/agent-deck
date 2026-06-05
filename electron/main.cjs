@@ -1,5 +1,6 @@
 const { app, BrowserWindow, Menu, Tray, dialog, ipcMain, nativeImage, shell } = require("electron");
 const path = require("node:path");
+const fs = require("node:fs");
 const { spawn } = require("node:child_process");
 const { buildUsageReport } = require("./services/usageService.cjs");
 const { getQuota } = require("./services/quotaService.cjs");
@@ -84,6 +85,30 @@ function createTray() {
   ]));
   tray.on("double-click", showMainWindow);
   return tray;
+}
+
+async function runUsageProbeIfRequested() {
+  const outputFile = process.env.TOOL_MASTER_USAGE_PROBE_FILE;
+  if (!outputFile) return false;
+  try {
+    const startedAt = Date.now();
+    const report = await buildUsageReport({ client: "all", range: "month", provider: "combined" });
+    fs.writeFileSync(outputFile, JSON.stringify({
+      ok: true,
+      elapsed: Date.now() - startedAt,
+      warnings: report.warnings || [],
+      summaryEntries: report.summary?.entries?.length || 0,
+      hourlyEntries: report.hourly?.entries?.length || 0,
+      clients: report.clients?.clients?.length || 0,
+    }, null, 2), "utf8");
+  } catch (error) {
+    fs.writeFileSync(outputFile, JSON.stringify({
+      ok: false,
+      error: error instanceof Error ? error.stack || error.message : String(error),
+    }, null, 2), "utf8");
+  }
+  app.quit();
+  return true;
 }
 
 function createWindow() {
@@ -288,7 +313,8 @@ ipcMain.handle("window:action", (_event, action) => {
   if (action === "close") mainWindow.close();
 });
 
-app.whenReady().then(() => {
+app.whenReady().then(async () => {
+  if (await runUsageProbeIfRequested()) return;
   createTray();
   createWindow();
 });

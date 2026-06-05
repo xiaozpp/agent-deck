@@ -11,8 +11,8 @@ function runUsageReport(query) {
   const script = `
     const childProcess = require("node:child_process");
     const calls = [];
-    childProcess.execFile = (_command, args, options, callback) => {
-      calls.push({ args: args.join(" "), timeout: options.timeout, electronRunAsNode: options.env && options.env.ELECTRON_RUN_AS_NODE });
+    childProcess.execFile = (command, args, options, callback) => {
+      calls.push({ command, args: args.join(" "), timeout: options.timeout, electronRunAsNode: options.env && options.env.ELECTRON_RUN_AS_NODE });
       const joined = args.join(" ");
       const payload = joined.includes("clients")
         ? { clients: [] }
@@ -46,16 +46,18 @@ test("usage report skips ccusage on the default fast refresh", () => {
   assert.equal(calls.length, 3);
   assert.equal(calls.some((call) => call.args.includes("ccusage")), false);
   assert.equal(calls.every((call) => call.timeout === 12_000), true);
-  assert.equal(calls.every((call) => call.electronRunAsNode === "1"), true);
+  assert.equal(calls.every((call) => call.command.endsWith(".exe")), true);
+  assert.equal(calls.every((call) => call.electronRunAsNode == null), true);
 });
 
 test("usage report runs ccusage only on forced refresh", () => {
   const { calls } = runUsageReport({ client: "all", range: "month", provider: "combined", force: true });
 
-  assert.equal(calls.some((call) => call.args.includes("ccusage") && call.args.includes("codex daily")), true);
-  assert.equal(calls.some((call) => call.args.includes("ccusage") && call.args.includes("claude daily")), true);
+  assert.equal(calls.some((call) => call.command.endsWith("ccusage.exe") && call.args.includes("codex daily")), true);
+  assert.equal(calls.some((call) => call.command.endsWith("ccusage.exe") && call.args.includes("claude daily")), true);
   assert.equal(calls.every((call) => call.timeout === 12_000), true);
-  assert.equal(calls.every((call) => call.electronRunAsNode === "1"), true);
+  assert.equal(calls.every((call) => call.command.endsWith(".exe")), true);
+  assert.equal(calls.every((call) => call.electronRunAsNode == null), true);
 });
 
 test("usage service resolves bundled CLI entries from app.asar.unpacked", () => {
@@ -65,4 +67,16 @@ test("usage service resolves bundled CLI entries from app.asar.unpacked", () => 
     svc.unpackAsarPath("C:/Agent Deck/resources/app.asar/node_modules/tokscale/bin.js"),
     "C:/Agent Deck/resources/app.asar.unpacked/node_modules/tokscale/bin.js",
   );
+});
+
+test("usage service prefers native Windows binaries for portable builds", () => {
+  const require = createRequire(import.meta.url);
+  const svc = require("../electron/services/usageService.cjs");
+  const tokscale = svc.resolveBin("tokscale");
+  const ccusage = svc.resolveBin("ccusage");
+
+  assert.match(tokscale.command, /tokscale\.exe$/);
+  assert.deepEqual(tokscale.prefix, []);
+  assert.match(ccusage.command, /ccusage\.exe$/);
+  assert.deepEqual(ccusage.prefix, []);
 });
