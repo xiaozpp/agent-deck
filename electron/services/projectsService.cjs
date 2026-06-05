@@ -24,7 +24,9 @@ function loadPersistedRoot() {
   }
 }
 
-let workRoot = process.env.TOOL_MASTER_WORK_ROOT || loadPersistedRoot() || DEFAULT_WORK_ROOT;
+const initialPersistedRoot = loadPersistedRoot();
+let workRootSource = process.env.TOOL_MASTER_WORK_ROOT ? "env" : (initialPersistedRoot ? "persisted" : "default");
+let workRoot = process.env.TOOL_MASTER_WORK_ROOT || initialPersistedRoot || DEFAULT_WORK_ROOT;
 
 function getWorkRoot() {
   return workRoot;
@@ -35,6 +37,7 @@ function setWorkRoot(dir) {
   if (!next) throw new Error("目录不能为空。");
   if (!exists(next)) throw new Error("目录不存在：" + next);
   workRoot = next;
+  workRootSource = "persisted";
   // Persist (best-effort; the env var still wins on next launch if set).
   try {
     fs.mkdirSync(path.dirname(SETTINGS_FILE), { recursive: true });
@@ -95,6 +98,9 @@ function listProjects() {
   const root = getWorkRoot();
   let entries;
   try { entries = fs.readdirSync(root, { withFileTypes: true }); } catch {
+    if (workRootSource === "default") {
+      return { root, available: true, projects: [] };
+    }
     return { root, available: false, projects: [] };
   }
   const projects = [];
