@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { createRequire } from "node:module";
 import path from "node:path";
 import test from "node:test";
 import { spawnSync } from "node:child_process";
@@ -11,7 +12,7 @@ function runUsageReport(query) {
     const childProcess = require("node:child_process");
     const calls = [];
     childProcess.execFile = (_command, args, options, callback) => {
-      calls.push({ args: args.join(" "), timeout: options.timeout });
+      calls.push({ args: args.join(" "), timeout: options.timeout, electronRunAsNode: options.env && options.env.ELECTRON_RUN_AS_NODE });
       const joined = args.join(" ");
       const payload = joined.includes("clients")
         ? { clients: [] }
@@ -45,6 +46,7 @@ test("usage report skips ccusage on the default fast refresh", () => {
   assert.equal(calls.length, 3);
   assert.equal(calls.some((call) => call.args.includes("ccusage")), false);
   assert.equal(calls.every((call) => call.timeout === 12_000), true);
+  assert.equal(calls.every((call) => call.electronRunAsNode === "1"), true);
 });
 
 test("usage report runs ccusage only on forced refresh", () => {
@@ -53,4 +55,14 @@ test("usage report runs ccusage only on forced refresh", () => {
   assert.equal(calls.some((call) => call.args.includes("ccusage") && call.args.includes("codex daily")), true);
   assert.equal(calls.some((call) => call.args.includes("ccusage") && call.args.includes("claude daily")), true);
   assert.equal(calls.every((call) => call.timeout === 12_000), true);
+  assert.equal(calls.every((call) => call.electronRunAsNode === "1"), true);
+});
+
+test("usage service resolves bundled CLI entries from app.asar.unpacked", () => {
+  const require = createRequire(import.meta.url);
+  const svc = require("../electron/services/usageService.cjs");
+  assert.equal(
+    svc.unpackAsarPath("C:/Agent Deck/resources/app.asar/node_modules/tokscale/bin.js"),
+    "C:/Agent Deck/resources/app.asar.unpacked/node_modules/tokscale/bin.js",
+  );
 });

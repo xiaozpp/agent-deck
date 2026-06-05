@@ -26,7 +26,7 @@ function resolveBin(name) {
     const pkg = require(`${name}/package.json`);
     const rel = typeof pkg.bin === "string" ? pkg.bin : pkg.bin && pkg.bin[name];
     if (rel) {
-      const entry = require.resolve(`${name}/${rel.replace(/^\.\//, "")}`);
+      const entry = unpackAsarPath(require.resolve(`${name}/${rel.replace(/^\.\//, "")}`));
       return { command: process.execPath, prefix: [entry] };
     }
   } catch (_) { /* fall through to PATH lookup */ }
@@ -35,10 +35,15 @@ function resolveBin(name) {
   return { command: name + suffix, prefix: [] };
 }
 
+function unpackAsarPath(filePath) {
+  return String(filePath || "").replace("app.asar", "app.asar.unpacked");
+}
+
 function runCli(spec, label, args) {
   // `spec` is { command, prefix } from resolveBin; or a bare string (PATH name).
   const command = typeof spec === "string" ? spec : spec.command;
   const fullArgs = typeof spec === "string" ? args : [...spec.prefix, ...args];
+  const runsWithElectronNode = typeof spec !== "string" && command === process.execPath && spec.prefix.length > 0;
   // Only use a shell when invoking a PATH name / .cmd shim; never when running
   // an absolute exe + script args (avoids quoting bugs with spaces in paths).
   const useShell = process.platform === "win32" && command === process.execPath ? false
@@ -52,6 +57,7 @@ function runCli(spec, label, args) {
         windowsHide: true,
         maxBuffer: 20 * 1024 * 1024,
         timeout: USAGE_CLI_TIMEOUT_MS,
+        env: runsWithElectronNode ? { ...process.env, ELECTRON_RUN_AS_NODE: "1" } : process.env,
       },
       (error, stdout, stderr) => {
         if (error) {
@@ -477,5 +483,7 @@ module.exports = {
   combineCcusageReports,
   normalizeClient,
   rangeArgs,
+  resolveBin,
   tokscaleClientValue,
+  unpackAsarPath,
 };
