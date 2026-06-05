@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="Agent Deck icon">
+  <defs>
+    <linearGradient id="bg" x1="36" y1="28" x2="220" y2="232" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#0f766e"/>
+      <stop offset="0.55" stop-color="#2563eb"/>
+      <stop offset="1" stop-color="#7c3aed"/>
+    </linearGradient>
+    <linearGradient id="panel" x1="70" y1="72" x2="190" y2="190" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="1" stop-color="#dff7ff"/>
+    </linearGradient>
+  </defs>
+  <rect width="256" height="256" rx="54" fill="url(#bg)"/>
+  <rect x="46" y="48" width="164" height="164" rx="28" fill="#061826" opacity="0.22"/>
+  <rect x="42" y="42" width="164" height="164" rx="28" fill="url(#panel)"/>
+  <path d="M82 164l31-84h27l31 84h-23l-6-18h-37l-6 18H82zm24-37h30l-15-44-15 44z" fill="#0f172a"/>
+  <path d="M181 164V80h31c27 0 44 16 44 42s-17 42-44 42h-31zm21-19h10c15 0 24-9 24-23s-9-23-24-23h-10v46z" fill="#0f172a" transform="translate(-38 0)"/>
+  <circle cx="205" cy="54" r="13" fill="#22c55e"/>
+  <path d="M64 190h112" stroke="#0f172a" stroke-width="12" stroke-linecap="round" opacity="0.9"/>
+</svg>

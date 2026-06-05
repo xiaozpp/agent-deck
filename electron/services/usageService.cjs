@@ -9,6 +9,7 @@ const {
 } = require("./usage/antigravityUsage.cjs");
 
 const projectRoot = path.resolve(__dirname, "..", "..");
+const USAGE_CLI_TIMEOUT_MS = 12_000;
 
 // Resolve a CLI's real JS entry point (e.g. node_modules/tokscale/bin.js) via
 // the package's `bin` field. We deliberately do NOT use node_modules/.bin
@@ -50,6 +51,7 @@ function runCli(spec, label, args) {
         shell: useShell,
         windowsHide: true,
         maxBuffer: 20 * 1024 * 1024,
+        timeout: USAGE_CLI_TIMEOUT_MS,
       },
       (error, stdout, stderr) => {
         if (error) {

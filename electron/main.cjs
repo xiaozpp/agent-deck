@@ -1,4 +1,4 @@
-const { app, BrowserWindow, dialog, ipcMain, shell } = require("electron");
+const { app, BrowserWindow, Menu, Tray, dialog, ipcMain, nativeImage, shell } = require("electron");
 const path = require("node:path");
 const { spawn } = require("node:child_process");
 const { buildUsageReport } = require("./services/usageService.cjs");
@@ -48,6 +48,43 @@ const {
 
 const rootDir = appRoot(app, __dirname);
 let mainWindow;
+let tray;
+let isQuitting = false;
+
+function appIconPath() {
+  return path.join(rootDir, "build", process.platform === "win32" ? "icon.ico" : "icon.png");
+}
+
+function showMainWindow() {
+  if (!mainWindow) {
+    createWindow();
+    return;
+  }
+  if (mainWindow.isMinimized()) mainWindow.restore();
+  mainWindow.show();
+  mainWindow.focus();
+}
+
+function createTray() {
+  if (tray) return tray;
+  const image = nativeImage.createFromPath(appIconPath());
+  tray = new Tray(image);
+  tray.setToolTip("Agent Deck");
+  tray.setContextMenu(Menu.buildFromTemplate([
+    { label: "显示 Agent Deck", click: showMainWindow },
+    { label: "隐藏到托盘", click: () => mainWindow?.hide() },
+    { type: "separator" },
+    {
+      label: "退出",
+      click: () => {
+        isQuitting = true;
+        app.quit();
+      },
+    },
+  ]));
+  tray.on("double-click", showMainWindow);
+  return tray;
+}
 
 function createWindow() {
   const width = Number.parseInt(process.env.TOOL_MASTER_QA_WIDTH || "1180", 10);
@@ -62,11 +99,18 @@ function createWindow() {
     transparent: false,
     backgroundColor: "#f3f7fb",
     title: "Agent Deck",
+    icon: appIconPath(),
     webPreferences: {
       preload: path.join(__dirname, "preload.cjs"),
       contextIsolation: true,
       nodeIntegration: false,
     },
+  });
+
+  mainWindow.on("close", (event) => {
+    if (isQuitting) return;
+    event.preventDefault();
+    mainWindow.hide();
   });
 
   if (app.isPackaged || process.env.TOOL_MASTER_LOAD_DIST === "1") {
@@ -244,12 +288,16 @@ ipcMain.handle("window:action", (_event, action) => {
   if (action === "close") mainWindow.close();
 });
 
-app.whenReady().then(createWindow);
+app.whenReady().then(() => {
+  createTray();
+  createWindow();
+});
 
 app.on("window-all-closed", () => {
-  if (process.platform !== "darwin") app.quit();
+  if (process.platform === "darwin") return;
+  if (isQuitting) app.quit();
 });
 
 app.on("activate", () => {
-  if (BrowserWindow.getAllWindows().length === 0) createWindow();
+  showMainWindow();
 });

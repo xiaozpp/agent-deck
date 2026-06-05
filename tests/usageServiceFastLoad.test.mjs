@@ -10,8 +10,8 @@ function runUsageReport(query) {
   const script = `
     const childProcess = require("node:child_process");
     const calls = [];
-    childProcess.execFile = (_command, args, _options, callback) => {
-      calls.push(args.join(" "));
+    childProcess.execFile = (_command, args, options, callback) => {
+      calls.push({ args: args.join(" "), timeout: options.timeout });
       const joined = args.join(" ");
       const payload = joined.includes("clients")
         ? { clients: [] }
@@ -43,12 +43,14 @@ test("usage report skips ccusage on the default fast refresh", () => {
 
   assert.equal(report.ccusage, null);
   assert.equal(calls.length, 3);
-  assert.equal(calls.some((call) => call.includes("ccusage")), false);
+  assert.equal(calls.some((call) => call.args.includes("ccusage")), false);
+  assert.equal(calls.every((call) => call.timeout === 12_000), true);
 });
 
 test("usage report runs ccusage only on forced refresh", () => {
   const { calls } = runUsageReport({ client: "all", range: "month", provider: "combined", force: true });
 
-  assert.equal(calls.some((call) => call.includes("ccusage") && call.includes("codex daily")), true);
-  assert.equal(calls.some((call) => call.includes("ccusage") && call.includes("claude daily")), true);
+  assert.equal(calls.some((call) => call.args.includes("ccusage") && call.args.includes("codex daily")), true);
+  assert.equal(calls.some((call) => call.args.includes("ccusage") && call.args.includes("claude daily")), true);
+  assert.equal(calls.every((call) => call.timeout === 12_000), true);
 });

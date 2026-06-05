@@ -223,7 +223,7 @@ export function UsageModule() {
           <h1>大模型用量</h1>
           <p>{report ? `更新于 ${new Date(report.generatedAt).toLocaleString()}` : "读取 tokscale / ccusage 数据"}</p>
         </div>
-        <button className="secondary-button" type="button" onClick={() => { void refresh({ ...query, force: true }); void refreshQuota(); }} disabled={loading}>
+        <button className="secondary-button" type="button" onClick={() => { void refresh(query); void refreshQuota(); }} disabled={loading}>
           <RefreshCw size={16} className={loading ? "spin" : ""} />
           刷新
         </button>
