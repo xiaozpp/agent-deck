@@ -155,8 +155,35 @@ button {
 
 .window-controls {
   display: flex;
+  align-items: center;
   gap: 7px;
   -webkit-app-region: no-drag;
+}
+
+.language-switch {
+  display: inline-flex;
+  align-items: center;
+  height: 31px;
+  padding: 2px;
+  border: 1px solid #d7e5f2;
+  border-radius: 7px;
+  background: rgba(255, 255, 255, 0.74);
+}
+
+.language-switch button {
+  min-width: 38px;
+  height: 25px;
+  padding: 0 8px;
+  color: #5c7894;
+  border-radius: 5px;
+  background: transparent;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.language-switch button.active {
+  color: #fff;
+  background: #0b84ee;
 }
 
 .window-button {
@@ -2351,4 +2378,3 @@ button {
   border-radius: 10px;
   background: #f4f8ff;
 }
-

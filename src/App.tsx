@@ -18,12 +18,14 @@ import { SessionsModule } from "./modules/sessions/SessionsModule";
 import { ToolManagerModule } from "./modules/tools/ToolManagerModule";
 import { modules } from "./modules/moduleRegistry";
 import { toolApi } from "./toolApi";
+import { t, useLanguage } from "./i18n";
 
 import type { ModuleId, ToolItem } from "./types";
 
 export function App() {
   const [active, setActive] = useState<ModuleId>("home");
   const [tools, setTools] = useState<ToolItem[]>([]);
+  const { language, setLanguage } = useLanguage();
 
   useEffect(() => {
     toolApi.listTools().then(setTools).catch(() => setTools([]));
@@ -54,7 +56,7 @@ export function App() {
                 style={{ "--tone": item.tone } as React.CSSProperties}
               >
                 <Icon size={18} />
-                <span>{item.label}</span>
+                <span>{t(item.label, language)}</span>
               </button>
             );
           })}
@@ -68,8 +70,24 @@ export function App() {
 
       <section className="workspace">
         <header className="titlebar">
-          <span>{modules.find((item) => item.id === active)?.label}</span>
+          <span>{t(modules.find((item) => item.id === active)?.label || "", language)}</span>
           <div className="window-controls">
+            <div className="language-switch" role="group" aria-label="Language">
+              <button
+                type="button"
+                className={language === "zh" ? "active" : ""}
+                onClick={() => setLanguage("zh")}
+              >
+                中文
+              </button>
+              <button
+                type="button"
+                className={language === "en" ? "active" : ""}
+                onClick={() => setLanguage("en")}
+              >
+                EN
+              </button>
+            </div>
             <WindowButton label="最小化" action="minimize">
               <Minimize2 size={15} />
             </WindowButton>

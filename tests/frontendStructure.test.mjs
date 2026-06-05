@@ -99,6 +99,17 @@ test("app shell helper components live outside the root App component", () => {
   assert.match(fs.readFileSync(appPath, "utf8"), /from "\.\/components\/WindowButton"/);
 });
 
+test("app shell exposes Chinese and English language support", () => {
+  const i18nPath = path.join(root, "src", "i18n.tsx");
+  const mainPath = path.join(root, "src", "main.tsx");
+  const appPath = path.join(root, "src", "App.tsx");
+
+  assert.equal(fs.existsSync(i18nPath), true);
+  assert.match(fs.readFileSync(mainPath, "utf8"), /<LanguageProvider>/);
+  assert.match(fs.readFileSync(appPath, "utf8"), /className="language-switch"/);
+  assert.match(fs.readFileSync(i18nPath, "utf8"), /export type Language = "zh" \| "en"/);
+});
+
 test("Antigravity usage parsing lives outside the aggregate usage service", () => {
   const servicePath = path.join(root, "electron", "services", "usageService.cjs");
   const antigravityPath = path.join(root, "electron", "services", "usage", "antigravityUsage.cjs");

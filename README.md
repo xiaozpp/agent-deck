@@ -23,6 +23,8 @@ Instead of jumping between half a dozen CLI windows, terminal logs, and scattere
 
 Everything runs strictly on your machine — **no servers, no telemetry, no account required.**
 
+Agent Deck supports both **English** and **Simplified Chinese** users. The UI follows your system language on first launch and includes a title-bar language switch so you can change between `English` and `中文` at any time.
+
 ---
 
 ## 🚀 Core Features
