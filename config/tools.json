@@ -1,0 +1,39 @@
+[
+  {
+    "id": "codex-usage",
+    "name": "大模型用量",
+    "category": "AI 工具",
+    "description": "查看 Codex / Claude token、费用和使用趋势。",
+    "status": "已接入",
+    "accent": "#7c3aed",
+    "icon": "activity",
+    "tags": ["Codex", "Claude", "统计", "AI"],
+    "favorite": true,
+    "recommended": true,
+    "cwd": ".",
+    "launch": {
+      "kind": "module",
+      "command": "codex-usage",
+      "args": []
+    }
+  },
+  {
+    "id": "markdown-viewer",
+    "name": "Markdown 查看器",
+    "category": "文档工具",
+    "description": "选择 Markdown 文件后，在 Agent 指挥台内预览。",
+    "status": "已接入",
+    "accent": "#f59e0b",
+    "icon": "file-text",
+    "tags": ["Markdown", "文档", "预览"],
+    "favorite": false,
+    "recommended": true,
+    "requiresFile": true,
+    "cwd": ".",
+    "launch": {
+      "kind": "module",
+      "command": "markdown-viewer",
+      "args": []
+    }
+  }
+]

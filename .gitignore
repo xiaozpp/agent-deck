@@ -1,0 +1,36 @@
+# Dependencies
+node_modules/
+
+# CodeGraph local index (machine-specific)
+.codegraph/
+
+# Build output
+dist/
+release/
+
+# QA / screenshots
+qa/
+.playwright-mcp/
+
+# Local scratch & probe scripts (sandbox helpers, never committed)
+_*.cjs
+_*.txt
+_*.mjs
+
+# Editor / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
+# Local env overrides
+.env
+.env.local
+
+# User-imported local presets (may contain private tokens/paths) — runtime data
+config/mcp-presets.json
+config/skill-presets/
