@@ -114,7 +114,7 @@ function QuotaAccountCard({ account, onSwitch, switching }: { account: QuotaAcco
             <div className="quota-model" key={bar.label}>
               <div className="quota-model-head">
                 <span className="quota-model-name" title={bar.label}>{bar.label}</span>
-                <span className="quota-model-pct" style={{ color: st.color }}>剩余 {Math.round(remaining)}%</span>
+                <span className="quota-model-pct" style={{ color: st.color }}>{`剩余 ${Math.round(remaining)}%`}</span>
               </div>
               <div className="quota-bar">
                 <span className="quota-bar-fill" style={{ width: `${remaining}%`, background: st.grad }} />
@@ -130,7 +130,7 @@ function QuotaAccountCard({ account, onSwitch, switching }: { account: QuotaAcco
       {account.validUntil > 0 && (
         <div className="quota-valid">
           <CalendarDays size={13} />
-          <span>有效期 {formatValidUntil(account.validUntil).days} 天</span>
+          <span>{`有效期 ${formatValidUntil(account.validUntil).days} 天`}</span>
           <em>{formatValidUntil(account.validUntil).date}</em>
         </div>
       )}

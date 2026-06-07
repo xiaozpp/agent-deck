@@ -8,7 +8,13 @@ on:
 
 jobs:
   check:
-    runs-on: windows-latest
+    # Windows is the supported platform; macOS/Linux run as cross-platform
+    # smoke tests so the code keeps compiling there ahead of full support.
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, macos-latest, ubuntu-latest]
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
 

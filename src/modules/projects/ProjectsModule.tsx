@@ -281,7 +281,7 @@ export function ProjectsModule() {
               {syncOpen && config && (
                 <div className="proj-sync">
                   <div className="proj-sync-head">
-                    <strong>把 {config.label} 同步到：</strong>
+                    <strong>{`把 ${config.label} 同步到：`}</strong>
                     <span>{syncTargets.size} 个目标</span>
                   </div>
                   <div className="proj-sync-list">
