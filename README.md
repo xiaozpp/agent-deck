@@ -12,6 +12,10 @@
 </p>
 
 <p align="center">
+  <a href="https://github.com/xiaozpp/Agent-Deck/releases/latest"><img src="https://img.shields.io/github/v/release/xiaozpp/Agent-Deck?label=%E2%AC%87%20Download%20for%20Windows&logo=windows&color=2ea44f" alt="Download for Windows"></a>
+</p>
+
+<p align="center">
   <b>English</b> | <a href="README_zh.md">简体中文</a>
 </p>
 
@@ -95,6 +99,14 @@ Agent Deck reads data files produced by other tools on your disk, so security is
 ## 🛠️ Getting Started
 
 > **Platform:** Agent Deck is currently **Windows-only** — it is built and tested on Windows 10/11. The code itself is largely cross-platform, but macOS/Linux paths and packaging are not yet validated. See [Roadmap](#-roadmap).
+
+### Download (recommended for most users)
+
+Grab the latest portable `.exe` from the **[Releases page](https://github.com/xiaozpp/Agent-Deck/releases/latest)** — no installation, just run it.
+
+> **Windows SmartScreen note:** the build is not code-signed yet, so Windows may show *"Windows protected your PC"* on first launch. Click **More info → Run anyway**. (The source is fully open here for anyone who wants to inspect or build it themselves.)
+
+### Build from source
 
 ### Prerequisites
 * **OS:** Windows 10 / 11

@@ -12,6 +12,10 @@
 </p>
 
 <p align="center">
+  <a href="https://github.com/xiaozpp/Agent-Deck/releases/latest"><img src="https://img.shields.io/github/v/release/xiaozpp/Agent-Deck?label=%E2%AC%87%20%E4%B8%8B%E8%BD%BD%20Windows%20%E7%89%88&logo=windows&color=2ea44f" alt="下载 Windows 版"></a>
+</p>
+
+<p align="center">
   <a href="README.md">English</a> | <b>简体中文</b>
 </p>
 
@@ -95,6 +99,14 @@ Agent Deck 会读取磁盘上其他工具生成的数据文件，因此安全是
 ## 🛠️ 快速开始
 
 > **平台：** Agent Deck 目前**仅支持 Windows**——在 Windows 10/11 上构建与测试。代码本身大体跨平台，但 macOS/Linux 的路径与打包尚未验证。见 [路线图](#-路线图)。
+
+### 下载（多数用户推荐）
+
+从 **[Releases 页面](https://github.com/xiaozpp/Agent-Deck/releases/latest)** 下载最新的便携版 `.exe`——免安装，双击即用。
+
+> **Windows SmartScreen 提示：** 当前版本尚未做代码签名，首次运行时 Windows 可能弹出 *"Windows 已保护你的电脑"*。点击 **更多信息 → 仍要运行** 即可。（源码在本仓库完全开放，介意的话也可以自己审阅或构建。）
+
+### 从源码构建
 
 ### 前置要求
 * **系统：** Windows 10 / 11

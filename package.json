@@ -6,6 +6,28 @@
   "license": "MIT",
   "type": "module",
   "main": "electron/main.cjs",
+  "homepage": "https://github.com/xiaozpp/Agent-Deck#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xiaozpp/Agent-Deck.git"
+  },
+  "bugs": {
+    "url": "https://github.com/xiaozpp/Agent-Deck/issues"
+  },
+  "keywords": [
+    "claude-code",
+    "codex",
+    "antigravity",
+    "mcp",
+    "agent-skills",
+    "electron",
+    "local-first",
+    "token-usage",
+    "ai-agents"
+  ],
+  "engines": {
+    "node": ">=20.19"
+  },
   "scripts": {
     "dev": "vite --host 127.0.0.1",
     "electron": "electron .",
