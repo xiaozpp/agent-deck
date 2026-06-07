@@ -8,13 +8,8 @@ on:
 
 jobs:
   check:
-    # Windows is the supported platform; macOS/Linux run as cross-platform
-    # smoke tests so the code keeps compiling there ahead of full support.
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [windows-latest, macos-latest, ubuntu-latest]
-    runs-on: ${{ matrix.os }}
+    name: Full check (Windows)
+    runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
 
@@ -29,3 +24,29 @@ jobs:
 
       - name: Run checks (tests + typecheck + build + syntax)
         run: npm run check
+
+  build-smoke:
+    # Windows is the only supported/tested platform; the unit tests deliberately
+    # encode Windows paths and .exe binary resolution, so the full suite only
+    # runs above. Here we just confirm the code still type-checks and builds on
+    # macOS/Linux, ahead of full cross-platform support (see README roadmap).
+    name: Build smoke (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-latest, ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Type-check and build
+        run: npx tsc --noEmit && npm run build
