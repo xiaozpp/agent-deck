@@ -1,7 +1,7 @@
 # Agent Deck · Agent 指挥台
 
 <p align="center">
-  <img src="docs/screenshot.png" alt="Agent Deck Screenshot" width="820" style="border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.15);"/>
+  <img src="docs/demo.gif" alt="Agent Deck demo" width="820" style="border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.15);"/>
 </p>
 
 <p align="center">
