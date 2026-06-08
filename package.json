@@ -36,7 +36,7 @@
     "check": "npm run test && tsc --noEmit && vite build && node --check electron/main.cjs && node --check electron/preload.cjs && node --check scripts/capture-screenshots.cjs",
     "qa:screenshot": "node scripts/capture-screenshots.cjs",
     "build": "vite build",
-    "package:win": "electron-builder --win portable --x64"
+    "package:win": "electron-builder --win portable --x64 --publish never"
   },
   "dependencies": {
     "ccusage": "^20.0.5",
