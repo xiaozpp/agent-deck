@@ -1,6 +1,6 @@
 {
   "name": "agent-deck",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "description": "A local-first Electron control deck for vibecoding: cross-agent usage & quota, Agent Skills, conversation history, and a project command center for Claude Code & Codex.",
   "author": "Agent Deck contributors",
   "license": "MIT",

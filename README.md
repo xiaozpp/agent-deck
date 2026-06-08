@@ -7,7 +7,7 @@
 <p align="center">
   <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT"></a>
   <img src="https://img.shields.io/badge/Platform-Windows-blue.svg" alt="Platform: Windows">
-  <img src="https://img.shields.io/badge/Version-v0.1.7-orange.svg" alt="Version: v0.1.7">
+  <img src="https://img.shields.io/badge/Version-v0.1.8-orange.svg" alt="Version: v0.1.8">
   <a href="https://github.com/xiaozpp/Agent-Deck/actions/workflows/ci.yml"><img src="https://github.com/xiaozpp/Agent-Deck/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
 </p>
 
