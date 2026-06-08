@@ -179,9 +179,9 @@ export function ProjectsModule() {
             return (
               <div key={p.path} className={`skill-card${active ? " skill-card-active" : ""}`} onClick={() => openProject(p)}>
                 <div className="skill-card-head">
-                  <span className="skill-card-name" title={p.path}>{p.name}</span>
+                  <span className="skill-card-name" data-i18n-skip title={p.path}>{p.name}</span>
                   {g.isGit ? (
-                    <span className="proj-branch"><GitBranch size={11} /> {g.branch}</span>
+                    <span className="proj-branch" data-i18n-skip><GitBranch size={11} /> {g.branch}</span>
                   ) : (
                     <span className="skill-scope">无 git</span>
                   )}
@@ -213,11 +213,11 @@ export function ProjectsModule() {
             <div className="skill-detail">
               <div className="skill-detail-head">
                 <div style={{ minWidth: 0 }}>
-                  <h2>{selected.name}</h2>
+                  <h2 data-i18n-skip>{selected.name}</h2>
                   <div className="skill-detail-meta">
                     {selected.git.isGit ? (
                       <>
-                        <span className="proj-branch"><GitBranch size={11} /> {selected.git.branch}</span>
+                        <span className="proj-branch" data-i18n-skip><GitBranch size={11} /> {selected.git.branch}</span>
                         <span className="skill-scope">{(selected.git.changes ?? 0) > 0 ? `${selected.git.changes} 项未提交` : "工作区干净"}</span>
                         {selected.git.lastSubject && <span className="skill-scope" title={selected.git.lastSubject}>最近: {selected.git.lastSubject.slice(0, 30)}</span>}
                       </>

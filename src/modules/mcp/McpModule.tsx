@@ -97,7 +97,7 @@ function McpServerRow({
     <div className={server.enabled ? "mcp-server-row" : "mcp-server-row mcp-server-disabled"}>
       <div className="mcp-server-info">
         <div className="mcp-server-name-row">
-          <strong>{server.name}</strong>
+          <strong data-i18n-skip>{server.name}</strong>
           <span className={`mcp-transport-badge mcp-transport-${server.transport}`}>
             {server.transport === "remote" ? "HTTP" : "stdio"}
           </span>
@@ -110,7 +110,7 @@ function McpServerRow({
             </span>
           )}
         </div>
-        <small title={summary}>{summary || "-"}</small>
+        <small title={summary} data-i18n-skip>{summary || "-"}</small>
       </div>
       <div className="mcp-server-actions">
         <button

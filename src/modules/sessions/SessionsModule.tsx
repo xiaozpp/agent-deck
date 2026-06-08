@@ -42,7 +42,7 @@ function SessionMessageView({ msg }: { msg: SessionMessage }) {
           return (
             <details className="sess-tool" key={i}>
               <summary>🔧 {p.tool || "tool"}</summary>
-              <pre>{p.text}</pre>
+              <pre data-i18n-skip>{p.text}</pre>
             </details>
           );
         }
@@ -50,7 +50,7 @@ function SessionMessageView({ msg }: { msg: SessionMessage }) {
           return (
             <details className="sess-tool sess-tool-result" key={i}>
               <summary>↳ 工具结果</summary>
-              <pre>{(p.text || "").slice(0, 4000)}</pre>
+              <pre data-i18n-skip>{(p.text || "").slice(0, 4000)}</pre>
             </details>
           );
         }
@@ -58,11 +58,11 @@ function SessionMessageView({ msg }: { msg: SessionMessage }) {
           return (
             <details className="sess-tool sess-thinking" key={i}>
               <summary>💭 思考</summary>
-              <pre>{p.text}</pre>
+              <pre data-i18n-skip>{p.text}</pre>
             </details>
           );
         }
-        return <div className="sess-text" key={i}>{p.text}</div>;
+        return <div className="sess-text" key={i} data-i18n-skip>{p.text}</div>;
       })}
     </div>
   );
@@ -176,15 +176,15 @@ export function SessionsModule() {
                 onClick={() => openSession(s)}
               >
                 <div className="skill-card-head">
-                  <span className="skill-card-name" title={s.title}>{s.title}</span>
+                  <span className="skill-card-name" data-i18n-skip title={s.title}>{s.title}</span>
                   <span className="quota-badge" style={{ color: sm.color, background: sm.bg, border: `1px solid ${sm.border}` }}>
                     {sm.label}
                   </span>
                 </div>
-                <p className="skill-card-desc">{s.preview || "（无预览）"}</p>
+                <p className="skill-card-desc" data-i18n-skip>{s.preview || "（无预览）"}</p>
                 <div className="skill-card-foot">
-                  <span className="skill-scope">{s.project || "未知项目"}</span>
-                  {s.gitBranch && <span className="skill-scope sess-branch">⎇ {s.gitBranch}</span>}
+                  <span className="skill-scope" data-i18n-skip>{s.project || "未知项目"}</span>
+                  {s.gitBranch && <span className="skill-scope sess-branch" data-i18n-skip>⎇ {s.gitBranch}</span>}
                   <span className="skill-scope">{s.messageCount} 条</span>
                   <span className="sess-time">{relTime(s.updatedAt)}</span>
                 </div>
@@ -203,13 +203,13 @@ export function SessionsModule() {
             <div className="skill-detail">
               <div className="skill-detail-head">
                 <div style={{ minWidth: 0 }}>
-                  <h2>{selected.title}</h2>
+                  <h2 data-i18n-skip>{selected.title}</h2>
                   <div className="skill-detail-meta">
                     {(() => { const sm = providerMeta(selected.source); return (
                       <span className="quota-badge" style={{ color: sm.color, background: sm.bg, border: `1px solid ${sm.border}` }}>{sm.label}</span>
                     ); })()}
-                    <span className="skill-scope">{selected.project || "未知项目"}</span>
-                    {selected.gitBranch && <span className="skill-scope sess-branch">⎇ {selected.gitBranch}</span>}
+                    <span className="skill-scope" data-i18n-skip>{selected.project || "未知项目"}</span>
+                    {selected.gitBranch && <span className="skill-scope sess-branch" data-i18n-skip>⎇ {selected.gitBranch}</span>}
                     <span className="skill-scope">{selected.messageCount} 条 · {relTime(selected.updatedAt)}</span>
                   </div>
                 </div>
@@ -222,7 +222,7 @@ export function SessionsModule() {
                 <button className="secondary-button" type="button" onClick={() => toolApi.sessionOpenFolder(selected.cwd)} disabled={!selected.cwd}>
                   <FolderOpen size={14} /> 打开项目
                 </button>
-                <span className="sess-path" title={selected.cwd}>{selected.cwd}</span>
+                <span className="sess-path" data-i18n-skip title={selected.cwd}>{selected.cwd}</span>
               </div>
 
               {detailLoading && <p className="empty-text">加载对话中…</p>}

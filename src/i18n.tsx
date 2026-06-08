@@ -342,17 +342,27 @@ function translateText(input: string, language: Language) {
   return input;
 }
 
+// User-generated content (project names, skill names, session titles and
+// transcripts, MCP server names, …) must never be translated — otherwise a
+// project literally named "全部" or "源" would be rewritten to "All" / "Source".
+// Components wrap such content in an element marked `data-i18n-skip`, and the
+// translator skips any node inside one. Chrome that legitimately needs
+// translating (e.g. the provider label 反重力 → Antigravity) stays unmarked.
+const SKIP_SELECTOR = "[data-i18n-skip]";
+
 function translateNodeTree(root: ParentNode, language: Language) {
   const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
   const nodes: Text[] = [];
   while (walker.nextNode()) nodes.push(walker.currentNode as Text);
   for (const node of nodes) {
+    if (node.parentElement?.closest(SKIP_SELECTOR)) continue;
     const next = translateText(node.nodeValue || "", language);
     if (next !== node.nodeValue) node.nodeValue = next;
   }
 
   const attrs = ["placeholder", "title", "aria-label"];
   for (const el of Array.from(root.querySelectorAll("*"))) {
+    if (el.closest(SKIP_SELECTOR)) continue;
     for (const attr of attrs) {
       const value = el.getAttribute(attr);
       if (!value) continue;

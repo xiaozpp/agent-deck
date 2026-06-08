@@ -67,7 +67,7 @@ export function ProjectRankingPanel({
                             style={{ flexShrink: 0, color: "#94a3b8", transform: isExpanded ? "rotate(90deg)" : "none", transition: "transform 0.15s" }}
                           />
                         )}
-                        <strong style={{ fontSize: "14px", color: isDeleted ? "#64748b" : "#0f172a", textDecoration: isDeleted ? "line-through" : "none", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                        <strong data-i18n-skip style={{ fontSize: "14px", color: isDeleted ? "#64748b" : "#0f172a", textDecoration: isDeleted ? "line-through" : "none", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                           {entry.realName || entry.workspaceLabel || entry.workspaceKey || "未识别项目"}
                         </strong>
                         {expandable && (
@@ -82,7 +82,7 @@ export function ProjectRankingPanel({
                         )}
                       </div>
                       <small className="project-row-meta" style={{ display: "flex", alignItems: "center", gap: "6px", color: "#64748b", fontSize: "11px", minWidth: 0, overflow: "hidden", whiteSpace: "nowrap" }}>
-                        <span className="project-path" style={{ flex: "1 1 auto", minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                        <span className="project-path" data-i18n-skip style={{ flex: "1 1 auto", minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                           {entry.displayPath || entry.workspaceKey || "-"}
                         </span>
                         <span className="meta-divider" style={{ flexShrink: 0 }}>·</span>

@@ -352,12 +352,12 @@ export function SkillsModule() {
                 onClick={() => openSkill(skill)}
               >
                 <div className="skill-card-head">
-                  <span className="skill-card-name" title={skill.name}>{skill.name}</span>
+                  <span className="skill-card-name" data-i18n-skip title={skill.name}>{skill.name}</span>
                   <span className="quota-badge" style={{ color: sm.color, background: sm.bg, border: `1px solid ${sm.border}` }}>
                     {sm.label}
                   </span>
                 </div>
-                <p className="skill-card-desc">{skill.description || "（无描述）"}</p>
+                <p className="skill-card-desc" data-i18n-skip>{skill.description || "（无描述）"}</p>
                 <div className="skill-card-foot">
                   <span className="skill-scope">{SKILL_SCOPE_LABELS[skill.scope] || skill.scope}</span>
                   {skill.readOnly && <span className="skill-scope skill-scope-ro">只读</span>}
@@ -397,7 +397,7 @@ export function SkillsModule() {
             <div className="skill-detail">
               <div className="skill-detail-head">
                 <div style={{ minWidth: 0 }}>
-                  <h2>{selected.name}</h2>
+                  <h2 data-i18n-skip>{selected.name}</h2>
                   <div className="skill-detail-meta">
                     {(() => { const sm = providerMeta(selected.source); return (
                       <span className="quota-badge" style={{ color: sm.color, background: sm.bg, border: `1px solid ${sm.border}` }}>{sm.label}</span>
@@ -430,13 +430,13 @@ export function SkillsModule() {
                 )}
               </div>
 
-              {detail.description && <p className="skill-detail-desc">{detail.description}</p>}
+              {detail.description && <p className="skill-detail-desc" data-i18n-skip>{detail.description}</p>}
               {detail.allowedTools.length > 0 && (
                 <div className="skill-tools">
                   {detail.allowedTools.map((t) => <span key={t} className="skill-tool-chip">{t}</span>)}
                 </div>
               )}
-              <pre className="skill-body">{detail.body || "（空）"}</pre>
+              <pre className="skill-body" data-i18n-skip>{detail.body || "（空）"}</pre>
               {selected.readOnly && (
                 <p className="skill-ro-note">
                   {selected.scope === "desktop"
