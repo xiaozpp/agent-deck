@@ -30,6 +30,11 @@ jobs:
 
       - name: Build Windows portable package
         run: npm run package:win
+        env:
+          # The portable build is intentionally unsigned. Disable electron-builder's
+          # code-signing certificate auto-discovery so it doesn't probe signtool /
+          # download winCodeSign on the runner (a common CI failure point).
+          CSC_IDENTITY_AUTO_DISCOVERY: false
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
