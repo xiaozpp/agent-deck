@@ -8,10 +8,30 @@ import {
   Terminal,
   User,
 } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { toolApi } from "../../toolApi";
 import { providerMeta } from "../providerMeta";
 import type { SessionDetail, SessionItem, SessionList, SessionMessage } from "../../types";
+
+// Wrap each case-insensitive occurrence of `query` in <mark> so search snippets
+// show exactly what matched.
+function highlight(text: string, query: string): ReactNode {
+  const q = query.trim();
+  if (!q) return text;
+  const lc = text.toLowerCase();
+  const lq = q.toLowerCase();
+  const out: ReactNode[] = [];
+  let i = 0;
+  let key = 0;
+  for (;;) {
+    const idx = lc.indexOf(lq, i);
+    if (idx < 0) { out.push(text.slice(i)); break; }
+    if (idx > i) out.push(text.slice(i, idx));
+    out.push(<mark key={key++} className="sess-hit">{text.slice(idx, idx + q.length)}</mark>);
+    i = idx + q.length;
+  }
+  return out;
+}
 
 function relTime(ms: number) {
   if (!ms) return "";
@@ -182,6 +202,12 @@ export function SessionsModule() {
                   </span>
                 </div>
                 <p className="skill-card-desc" data-i18n-skip>{s.preview || "（无预览）"}</p>
+                {s.match?.snippet && (
+                  <p className="sess-match">
+                    <span className="sess-match-role">{s.match.role === "assistant" ? "助手" : "我"}</span>
+                    <span data-i18n-skip>{highlight(s.match.snippet, search)}</span>
+                  </p>
+                )}
                 <div className="skill-card-foot">
                   <span className="skill-scope" data-i18n-skip>{s.project || "未知项目"}</span>
                   {s.gitBranch && <span className="skill-scope sess-branch" data-i18n-skip>⎇ {s.gitBranch}</span>}

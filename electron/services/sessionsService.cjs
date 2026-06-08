@@ -210,23 +210,50 @@ function loadAll(force) {
   return sessions;
 }
 
+// Pull a short, single-line snippet of `text` centred on the first occurrence
+// of the (already lowercased) query, with ellipses where it was clipped. Returns
+// the original-cased text so the UI can highlight the match.
+function snippetAround(text, q, radius = 48) {
+  const i = text.toLowerCase().indexOf(q);
+  if (i < 0) return null;
+  const start = Math.max(0, i - radius);
+  const end = Math.min(text.length, i + q.length + radius);
+  let s = text.slice(start, end).replace(/\s+/g, " ").trim();
+  if (start > 0) s = "…" + s;
+  if (end < text.length) s = s + "…";
+  return s;
+}
+
+// Match a session against the lowercased query `q`. Prefers a body/thinking hit
+// (returning a snippet so the UI can show *why* it matched), then falls back to
+// title/project. Returns null when nothing matches.
+function sessionMatch(s, q) {
+  for (const r of s._records) {
+    for (const p of r.parts) {
+      if ((p.kind === "text" || p.kind === "thinking") && p.text && p.text.toLowerCase().includes(q)) {
+        return { field: "body", role: r.role, snippet: snippetAround(p.text, q) };
+      }
+    }
+  }
+  if (s.title.toLowerCase().includes(q)) return { field: "title" };
+  if ((s.project || "").toLowerCase().includes(q)) return { field: "project" };
+  return null;
+}
+
 function listSessions(query = {}) {
   const all = loadAll(query.force === true);
   const source = query.source && query.source !== "all" ? query.source : null;
   const q = (query.search || "").trim().toLowerCase();
-  let arr = all;
-  if (source) arr = arr.filter((s) => s.source === source);
+  const base = source ? all.filter((s) => s.source === source) : all;
+  let sessions;
   if (q) {
-    arr = arr.filter((s) => {
-      if (s.title.toLowerCase().includes(q) || (s.project || "").toLowerCase().includes(q)) return true;
-      // search message text bodies
-      for (const r of s._records) {
-        for (const p of r.parts) {
-          if ((p.kind === "text" || p.kind === "thinking") && p.text && p.text.toLowerCase().includes(q)) return true;
-        }
-      }
-      return false;
-    });
+    sessions = [];
+    for (const s of base) {
+      const m = sessionMatch(s, q);
+      if (m) sessions.push({ ...lite(s), match: m });
+    }
+  } else {
+    sessions = base.map(lite);
   }
   const counts = {
     all: all.length,
@@ -234,7 +261,7 @@ function listSessions(query = {}) {
     codex: all.filter((s) => s.source === "codex").length,
   };
   return {
-    sessions: arr.slice(0, 500).map(lite),
+    sessions: sessions.slice(0, 500),
     counts,
     available: { claude: exists(CLAUDE_PROJECTS_DIR), codex: exists(CODEX_SESSIONS_DIR) },
   };
@@ -268,4 +295,6 @@ module.exports = {
   _parseClaudeSession: parseClaudeSession,
   _parseCodexSession: parseCodexSession,
   _blocksToParts: blocksToParts,
+  _sessionMatch: sessionMatch,
+  _snippetAround: snippetAround,
 };

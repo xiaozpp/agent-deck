@@ -60,6 +60,8 @@ export type SessionItem = {
   messageCount: number;
   sessionId?: string;
   originator?: string;
+  // Present only on search results: where/why this session matched.
+  match?: { field: "body" | "title" | "project"; role?: "user" | "assistant"; snippet?: string };
 };
 
 export type SessionPart = {

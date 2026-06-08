@@ -21,55 +21,53 @@
 
 ---
 
-> **一个绝不联网的 AI 编程 Agent 指挥台。**
-> 你的 OAuth 凭据永不离开 Electron 主进程。没有网络客户端、没有遥测、不需要账号，所有数据都从你自己的硬盘读取。
+> **看清你的 token 花在哪、找回你和 Agent 的每一次对话、统一管理项目上下文 —— 全程本地，绝不联网。**
 
-**Agent Deck**（Agent 指挥台）把 **Claude Code**、**Codex**、**反重力（Antigravity）** 散落各处的状态收进一个窗口——用量与费用、剩余配额、Agent 技能、MCP 服务器、会话历史、工作区 git 状态。不必再在六七个 CLI 窗口、终端日志和配置文件之间反复横跳，你得到的是一个统一的、**本地优先**的桌面应用。
+**Agent Deck**（Agent 指挥台）是为长在 **Claude Code** 和 **Codex** 里的开发者做的**本地优先仪表盘 + 记忆库**。它读取这些 Agent 本就留在你硬盘上的数据，把它变成你真正能*看见、能搜索*的东西:成本分析、可搜索的全部对话历史,以及一处管理那些操控 Agent 的提示词与配置。
 
-同类工具大多要么是 web 面板（数据离开本机），要么是只做一件事的小工具。Agent Deck 在两条别人难抄的轴上不一样：
-
-- **🔒 隐私即产品。** 含凭据的文件**只**在主进程解析；只有安全展示字段（套餐名、用量百分比）会跨过 IPC 边界进入 UI。邮箱默认打码。应用自身没有任何对外网络。
-- **🎛️ 一处掌控全局。** 通常分散在七个终端里的七件事被统一起来——而且每一次写配置都被限制在工作区内、先自动备份、先校验。
+切换账号/Provider 已经有不错的工具——比如 [Cockpit Tools](https://github.com/jlcodes99/cockpit-tools) 和 [cc-switch](https://github.com/farion1231/cc-switch)。Agent Deck **刻意不去抢**这条赛道,而是专注它们*不做*的事,并且做到**无代理、无云账号、零遥测**。
 
 ---
 
-## ✨ 核心能力
+## 🪧 它的不同之处
 
-### 📊 大模型用量分析
-实时追踪 **Codex**、**Claude Code**、**反重力** 的 token、费用与习惯（由 [`tokscale`](https://www.npmjs.com/package/tokscale) + [`ccusage`](https://www.npmjs.com/package/ccusage) 驱动）。
-* 聚合的费用、输入/输出/缓存 token，以及 GitHub 风格的 **53 周活跃热力图**。
-* 项目排行与按模型的费用拆解，一眼看清 token 花在哪。
+### 📊 用量 & 成本分析 —— *看清 token 花在哪*
+这里没有别人在做的一块:把原始 token 日志变成真正的洞察,横跨 **Codex**、**Claude Code**、**反重力**(由 [`tokscale`](https://www.npmjs.com/package/tokscale) + [`ccusage`](https://www.npmjs.com/package/ccusage) 驱动)。
+* 聚合费用、输入/输出/缓存 token,GitHub 风格 **53 周热力图**,项目排行,按模型的费用拆解。
+* 电池条式**剩余配额**,额度见底不再被打个措手不及。
 
-<p align="center"><img src="docs/usage.png" alt="用量分析与配额" width="780"/></p>
+<p align="center"><img src="docs/usage.png" alt="用量分析与配额" width="800"/></p>
 
-### 🔋 电池条式配额 & 账号切换
-* 直观的**剩余百分比电池条**，直接读取本机 [cockpit-tools](https://github.com/jlcodes99/cockpit-tools) 缓存。
-* **安全的 Codex 一键切号**——原子化改写并校验 `auth.json`，自动备份原文件。
+### 🔍 会话记忆 —— *搜索你和 Agent 的每一次对话*
+Agent 会忘,Agent Deck 不会。它把你机器上**每一个 Claude Code 与 Codex 会话**索引成一条可搜索的时间线:
+* 对标题、项目、以及历史对话的**完整正文做全文搜索**——并**直接在结果里显示命中的片段**,让你一眼看到*为什么*这条会话被匹配到。
+* 干净的对话渲染,以及**一键在原项目目录拉起新会话**。
+* 这条全网同类工具都没做——它是你私有的、跨 Agent 的长期记忆。
 
-### 🧩 统一 Agent Skills 管理
-* 自动索引 **Claude Code**、**Claude 桌面版**、**Codex** 的个人 / 插件 / 内置技能。
-* 查看、编辑、启用/禁用、打开或删除任意技能。
-* 内置一个**离线**精选起步市场（commit 助手、代码审查、PR 撰写、测试生成、代码库讲解、调试助手）——安装即向所选 agent 写入一份可直接编辑的 `SKILL.md`。
+### 🎛️ 项目 & 提示词上下文 —— *管理操控 Agent 的东西*
+* 扫描本地仓库,查看分支、是否有改动、领先/落后状态。
+* 编辑每个项目的 Agent 提示词(`AGENTS.md`、`.mcp.json`、`CLAUDE.md`),并可**一次性把标准模板同步到多个项目**(自动备份)。
 
-<p align="center"><img src="docs/skills-market.png" alt="技能市场" width="780"/></p>
+### 🔒 只读仪表盘,不是代理
+这是架构上的一条底线:
+* **无代理、无云同步、无遥测、无账号。** Agent Deck *读取* Agent 本就写下的文件,绝不挡在你的流量中间。
+* **Token 永不离开主进程。** 含凭据的文件只在 Electron 主进程解析;只有安全展示字段会进入 UI,邮箱默认打码。
 
-### 🔌 MCP 服务器管理
-* 读写 **Claude Code**（`~/.claude.json`）、**Codex**（`~/.codex/config.toml`）、**反重力** 的 MCP 配置——JSON 与 TOML 由适配层透明处理。
-* 对 `stdio` 和远程（HTTP）服务器完整增删改查，含 `env` 与 headers；一键把可用配置复制到其他客户端（自动备份）。
-* 内置一个**离线**的"写配置即用"精选市场——安装只写入配置项，**绝不执行安装命令**。
+---
 
-<p align="center"><img src="docs/mcp-market.png" alt="MCP 市场" width="780"/></p>
+## 🧰 还包含
 
-### 🔍 跨 Agent 会话时间线
-* 对 Claude Code 与 Codex 的全部历史对话与终端会话做**全文搜索**。
-* 干净的对话渲染，并可**一键在原项目目录拉起新的 agent 会话**。
+把指挥台凑齐。这些与专门工具有重叠——你爱用哪个继续用,Agent Deck 只是帮你省一个窗口。
 
-### 🎛️ 项目指挥台
-* 扫描本地仓库，查看分支、是否有改动、领先/落后状态。
-* 编辑每个项目的 agent 提示词（`AGENTS.md`、`.mcp.json`、`CLAUDE.md`），并可**一次性把标准模板同步到多个项目**（自动备份）。
+* **🔋 配额 & 账号切换** —— 从本机 [Cockpit Tools](https://github.com/jlcodes99/cockpit-tools) 缓存读取剩余百分比电池条,以及安全的 Codex `auth.json` 一键切号(原子化、自动备份)。*Agent Deck 读的就是 Cockpit 的缓存,两者天然协作。*
+* **🔌 MCP 服务器管理** —— 读写 Claude Code / Codex / 反重力的 MCP 配置(JSON + TOML),完整增删改查,跨客户端复制,以及一个**绝不执行安装命令**的离线"写配置即用"市场。
+* **🧩 Agent Skills 管理** —— 索引、编辑、启停 Claude Code / Claude 桌面版 / Codex 的技能,含离线起步市场。
+* **📝 Markdown 查看器** —— 预览本地 Markdown,图片完整解析。
 
-### 📝 内嵌 Markdown 查看器
-* 在应用内预览任意本地 Markdown 文件，本地图片完整解析。
+<p align="center">
+  <img src="docs/mcp-market.png" alt="MCP 市场" width="390"/>
+  <img src="docs/skills-market.png" alt="技能市场" width="390"/>
+</p>
 
 ---
 

@@ -21,55 +21,53 @@
 
 ---
 
-> **A control center for your AI coding agents that never phones home.**
-> Your OAuth tokens never leave the Electron main process. There is no network client, no telemetry, no account. Everything is read from your own disk.
+> **See where your tokens go, find any past agent conversation, and keep your project context in order — all on your own machine, never phoning home.**
 
-**Agent Deck** pulls the scattered state of **Claude Code**, **Codex**, and **Antigravity** into one window — usage and cost, remaining quota, agent skills, MCP servers, conversation history, and workspace git status. Instead of juggling half a dozen CLI windows, terminal logs, and config files, you get one cohesive, **local-first** desktop app.
+**Agent Deck** is a **local-first dashboard and memory layer** for developers who live in **Claude Code** and **Codex**. It reads the data these agents already leave on your disk and turns it into something you can actually *see and search*: cost analytics, a searchable history of every conversation, and one place to manage the prompts and config that steer your agents.
 
-Most tools in this space are either web dashboards (your data leaves your machine) or single-purpose utilities. Agent Deck is different on two axes that are hard to copy:
-
-- **🔒 Privacy is the product.** Token-bearing files are parsed *only* in the main process; nothing but safe display fields (plan name, usage %) ever crosses the IPC boundary into the UI. Emails are masked by default. The app has no outbound network of its own.
-- **🎛️ Breadth in one place.** Seven tools that normally live in seven terminals, unified — and every config write is confined to your workspace, backed up, and validated first.
+There are already solid tools for *switching accounts and providers* — e.g. [Cockpit Tools](https://github.com/jlcodes99/cockpit-tools) and [cc-switch](https://github.com/farion1231/cc-switch). Agent Deck deliberately does **not** try to win that race. It focuses on the things those tools *don't* do — and it does them with **no proxy, no cloud account, and zero telemetry**.
 
 ---
 
-## ✨ Highlights
+## 🪧 What makes it different
 
-### 📊 LLM Usage Analytics
-Track tokens, cost, and habits in real time across **Codex**, **Claude Code**, and **Antigravity** (powered by [`tokscale`](https://www.npmjs.com/package/tokscale) + [`ccusage`](https://www.npmjs.com/package/ccusage)).
-* Aggregated cost, input/output/cache tokens, and a GitHub-style **53-week activity heatmap**.
-* Per-project rankings and per-model cost breakdowns to find where your tokens go.
+### 📊 Usage & cost analytics — *know where your tokens go*
+The piece nobody else here builds: raw token logs turned into real insight, across **Codex**, **Claude Code**, and **Antigravity** (via [`tokscale`](https://www.npmjs.com/package/tokscale) + [`ccusage`](https://www.npmjs.com/package/ccusage)).
+* Aggregated cost and input/output/cache tokens, a GitHub-style **53-week heatmap**, per-project rankings, and per-model cost breakdowns.
+* Battery-style **remaining-quota bars** so a limit never surprises you.
 
-<p align="center"><img src="docs/usage.png" alt="Usage analytics & quota" width="780"/></p>
+<p align="center"><img src="docs/usage.png" alt="Usage analytics & quota" width="800"/></p>
 
-### 🔋 Battery-style Quota & Account Switching
-* Intuitive **remaining-percentage bars** for active models and billing windows, read directly from the local [cockpit-tools](https://github.com/jlcodes99/cockpit-tools) cache.
-* **Safe one-click account switching** for Codex — rewrites and validates `auth.json` atomically, with an automatic backup.
+### 🔍 Session memory — *search every conversation you've ever had*
+Your agents forget. Agent Deck doesn't. It indexes **every Claude Code and Codex session** on your machine into one searchable timeline:
+* **Full-text search** across titles, projects, and the full message bodies of past chats — with the matching snippet shown inline so you can see *why* a session matched.
+* Clean transcript rendering, and **one-click resume** of a fresh session in the exact project directory.
+* No other tool in this space does this — it's your private, cross-agent long-term memory.
 
-### 🧩 Unified Agent Skills Manager
-* Auto-indexes personal, plugin, and system skills for **Claude Code**, **Claude Desktop**, and **Codex**.
-* Review, edit, enable/disable, open, or delete any skill.
-* A curated, **offline** starter marketplace (commit helper, code reviewer, PR writer, test writer, codebase explainer, debug assistant) — install writes a ready-to-edit `SKILL.md` into the agent you choose.
-
-<p align="center"><img src="docs/skills-market.png" alt="Skills marketplace" width="780"/></p>
-
-### 🔌 MCP Server Manager
-* Read and write MCP configs for **Claude Code** (`~/.claude.json`), **Codex** (`~/.codex/config.toml`), and **Antigravity** — JSON and TOML handled transparently behind an adapter.
-* Full CRUD for `stdio` and remote (HTTP) servers, including `env` and headers; duplicate a working server across clients in one click (with backups).
-* A curated **offline** marketplace of "config-and-go" servers — install writes the config entry only, it **never runs an installer**.
-
-<p align="center"><img src="docs/mcp-market.png" alt="MCP marketplace" width="780"/></p>
-
-### 🔍 Cross-Agent Session Timeline
-* **Full-text search** across all past Claude Code and Codex chats and terminal sessions.
-* Clean transcript rendering, and **one-click resume** of a fresh agent session in the exact project directory.
-
-### 🎛️ Workspace Command Center
+### 🎛️ Project & prompt context — *manage what steers your agents*
 * Scan local repos for branch, dirty state, and ahead/behind status.
-* Edit per-project agent prompts (`AGENTS.md`, `.mcp.json`, `CLAUDE.md`) and **sync a standardized template across many projects at once** (with backups).
+* Edit each project's agent prompts (`AGENTS.md`, `.mcp.json`, `CLAUDE.md`) and **sync a standardized template across many projects at once** (with backups).
 
-### 📝 Embedded Markdown Viewer
-* Preview any local Markdown file inside the app, with local images fully resolved.
+### 🔒 A read-only dashboard, not a proxy
+This is the line in the sand that sets the architecture apart:
+* **No proxy, no cloud sync, no telemetry, no account.** Agent Deck *reads* the files your agents already write — it never sits in the middle of your traffic.
+* **Tokens never leave the main process.** Credential files are parsed only in Electron's main process; only safe display fields cross into the UI, and emails are masked by default.
+
+---
+
+## 🧰 Also included
+
+Rounding out the cockpit. These overlap with dedicated tools — keep using whichever you prefer; Agent Deck just saves you a window.
+
+* **🔋 Quota & account switching** — remaining-% bars from the local [Cockpit Tools](https://github.com/jlcodes99/cockpit-tools) cache, plus safe one-click Codex `auth.json` switching (atomic, backed up). *Agent Deck reads Cockpit's cache, so the two work well side by side.*
+* **🔌 MCP server manager** — read/write MCP configs for Claude Code, Codex, and Antigravity (JSON + TOML), full CRUD, duplicate across clients, and an offline "config-and-go" marketplace that **never runs an installer**.
+* **🧩 Agent Skills manager** — index, edit, and toggle skills for Claude Code, Claude Desktop, and Codex, with an offline starter marketplace.
+* **📝 Markdown viewer** — preview local Markdown with images resolved.
+
+<p align="center">
+  <img src="docs/mcp-market.png" alt="MCP marketplace" width="390"/>
+  <img src="docs/skills-market.png" alt="Skills marketplace" width="390"/>
+</p>
 
 ---
 
